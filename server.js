@@ -7,6 +7,10 @@ var Beer = require('./models/beer');
 // Create our Express application
 var app = express();
 
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+
 // Use environment defined port or 3000
 var port = process.env.PORT || 3000;
 
@@ -20,6 +24,32 @@ router.get('/', function(req, res) {
     message: 'You are running dangerously low on beer!'
   });
 });
+
+// Create a new route with the prefix /beers
+var beersRoute = router.route('/beers');
+
+// Create endpoint /api/beers for POSTS
+beersRoute.post(function(req, res) {
+  // Create a new instance of the Beer model
+  var beer = new Beer();
+
+  // Set the beer properties that came from the POST data
+  beer.name = req.body.name;
+  beer.type = req.body.type;
+  beer.quantity = req.body.quantity;
+
+  // Save the beer and check for errors
+  beer.save(function(err) {
+    if (err)
+      res.send(err);
+
+    res.json({
+      message: 'Beer added to the locker!',
+      data: beer
+    });
+  });
+});
+
 
 // Register all our routes with /api
 app.use('/api', router);
