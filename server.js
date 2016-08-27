@@ -50,6 +50,48 @@ beersRoute.post(function(req, res) {
   });
 });
 
+beersRoute.get(function(req, res) {
+  // Use the Beer model to find all beer
+  Beer.find(function(err, beers) {
+    if (err)
+      res.send(err);
+
+    res.json(beers);
+  });
+});
+
+
+var beerRoute = router.route('/beers/:beer_id');
+
+// Create endpoint /api/beers/:beer_id for GET
+beerRoute.get(function(req, res) {
+  // Use the Beer model to find a specific beer
+  Beer.findById(req.params.beer_id, function(err, beer) {
+    if (err)
+      res.send(err);
+
+    res.json(beer);
+  });
+});
+
+beerRoute.put(function(req, res) {
+  // Use the Beer model to find a specific beer
+  Beer.findById(req.params.beer_id, function(err, beer) {
+    if (err)
+      res.send(err);
+
+    // Update the existing beer quantity
+    beer.quantity = req.body.quantity;
+
+    // Save the beer and check for errors
+    beer.save(function(err) {
+      if (err)
+        res.send(err);
+
+      res.json(beer);
+    });
+  });
+});
 
 // Register all our routes with /api
 app.use('/api', router);
