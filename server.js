@@ -10,6 +10,7 @@ var passport = require('passport');
 var authController = require('./controllers/auth');
 var clientController = require('./controllers/client');
 var ejs = require('ejs');
+var session = require('express-session');
 
 
 // Connect to the beerlocker MongoDB
@@ -22,6 +23,13 @@ app.set('view engine', 'ejs');
 // Use the body-parser package in our application
 app.use(bodyParser.urlencoded({
   extended: true
+}));
+
+// Use express session support since OAuth2orize requires it
+app.use(session({
+  secret: 'Super Secret Session Key',
+  saveUninitialized: true,
+  resave: true
 }));
 
 // Use the passport package in our application
